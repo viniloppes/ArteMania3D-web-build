@@ -2,46 +2,74 @@
 <html lang="en-us">
   <head>
     <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes">
     <title>Unity Web Player | Movimentarte_project</title>
+    
+    <style>
+      /* Reset básico para remover bordas brancas */
+      body {
+        text-align: center; 
+        padding: 0; 
+        border: 0; 
+        margin: 0;
+        background: #231F20;
+        overflow: hidden; /* Evita que a rotação crie barras de rolagem */
+        width: 100vw;
+        height: 100vh;
+      }
+
+      /* Configuração base do Canvas da Unity */
+      #unity-canvas {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        /* translate(-50%, -50%) garante que o eixo de rotação seja exatamente o centro da tela */
+        transform: translate(-50%, -50%); 
+      }
+
+      /* CENÁRIO 1: Celular Deitado (Landscape) ou Desktop */
+      @media screen and (orientation: landscape) {
+        #unity-canvas {
+          width: 100vw;  /* 100% da largura da tela */
+          height: 100vh; /* 100% da altura da tela */
+          /* Nenhuma rotação necessária */
+        }
+      }
+
+      /* CENÁRIO 2: Celular em Pé (Portrait) - A Mágica Acontece Aqui */
+      @media screen and (orientation: portrait) {
+        #unity-canvas {
+          width: 100vh;  /* A largura do Canvas passa a ser a ALTURA da tela física */
+          height: 100vw; /* A altura do Canvas passa a ser a LARGURA da tela física */
+          
+          /* Gira o canvas em 90 graus, mantendo-o centralizado */
+          transform: translate(-50%, -50%) rotate(90deg); 
+        }
+      }
+    </style>
   </head>
-  <body style="text-align: center; padding: 0; border: 0; margin: 0;">
-    <canvas id="unity-canvas" width=960 height=600 tabindex="-1" style="width: 960px; height: 600px; background: #231F20"></canvas>
+  <body>
+    <canvas id="unity-canvas" tabindex="-1"></canvas>
+    
     <script src="Build/v2.loader.js"></script>
     <script>
-    var canvas = document.querySelector("#unity-canvas");
-
-if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-    var meta = document.createElement('meta');
-    meta.name = 'viewport';
-    meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
-    document.getElementsByTagName('head')[0].appendChild(meta);
-
-    canvas.style.width = "100%";
-    canvas.style.height = "100%";
-    canvas.style.position = "fixed";
-
-    // FUNÇÃO PARA TENTAR TRAVAR E POR EM FULLSCREEN
-    function requestLandscapeAndFullScreen() {
-        // Tenta Fullscreen
-        if (canvas.requestFullscreen) {
-            canvas.requestFullscreen();
-        } else if (canvas.webkitRequestFullscreen) { /* iOS/Safari */
-            canvas.webkitRequestFullscreen();
-        }
-
-        // Tenta Travar Orientação (Só funciona em modo Fullscreen em alguns browsers)
-        if (screen.orientation && screen.orientation.lock) {
-            screen.orientation.lock('landscape').catch(function(error) {
-                console.log("Trava de orientação rejeitada: " + error);
-            });
-        }
-    }
-
-    // O browser NÃO permite chamar isso automaticamente ao carregar.
-    // É NECESSÁRIO um clique do usuário.
-    document.addEventListener("click", requestLandscapeAndFullScreen, { once: true });
-}
+      // O script da Unity fica muito mais limpo.
+      // Removemos aquela injeção de CSS via JavaScript que havia no seu código original,
+      // pois agora o CSS puramente lida com a responsividade e a rotação.
+      createUnityInstance(document.querySelector("#unity-canvas"), {
+        arguments: [],
+        dataUrl: "Build/v2.data",
+        frameworkUrl: "Build/v2.framework.js",
+        codeUrl: "Build/v2.wasm",
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: "DefaultCompany",
+        productName: "Movimentarte_project",
+        productVersion: "1.0",
+      }).then((unityInstance) => {
+        console.log("Jogo carregado com sucesso!");
+      }).catch((message) => {
+        alert(message);
+      });
     </script>
   </body>
 </html>
