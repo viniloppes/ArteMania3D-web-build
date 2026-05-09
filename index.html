@@ -107,10 +107,21 @@
           profile.style.bottom = '5px';
           profile.style.left = '5px';
           document.body.appendChild(profile);
+          forceLandscape();
         }).catch((message) => {
           alert(message);
         });
       };
+      async function forceLandscape() {
+    try {
+        if (screen.orientation && screen.orientation.lock) {
+            await screen.orientation.lock('landscape');
+        }
+    } catch (err) {
+        // Falha comum em desktops ou navegadores sem suporte
+        console.warn("Lock não suportado:", err);
+    }
+}
       document.body.appendChild(script);
     </script>
   </body>
