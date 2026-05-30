@@ -6905,6 +6905,23 @@ function dbg(text) {
   	return true;
   }
 
+  
+  function _JS_Sound_GetPosition(channelInstance)
+  {
+  	if (WEBAudio.audioWebEnabled == 0)
+  		return 0;
+  
+  	var channel = WEBAudio.audioInstances[channelInstance];
+  	if (!channel)
+  		return 0;
+  
+  	var source = channel.source;
+  	if (!source)
+  		return 0;
+  
+  	return source.estimatePlaybackPosition ? source.estimatePlaybackPosition() : 0;
+  }
+
   function _JS_Sound_Init() {
   
   	try {
@@ -16364,6 +16381,7 @@ var wasmImports = {
   "JS_Sound_GetLength": _JS_Sound_GetLength,
   "JS_Sound_GetLoadState": _JS_Sound_GetLoadState,
   "JS_Sound_GetMetaData": _JS_Sound_GetMetaData,
+  "JS_Sound_GetPosition": _JS_Sound_GetPosition,
   "JS_Sound_Init": _JS_Sound_Init,
   "JS_Sound_Load": _JS_Sound_Load,
   "JS_Sound_Load_PCM": _JS_Sound_Load_PCM,
